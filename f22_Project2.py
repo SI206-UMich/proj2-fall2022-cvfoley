@@ -1,4 +1,3 @@
-from xml.sax import parseString
 from bs4 import BeautifulSoup
 import re
 import os
@@ -57,7 +56,7 @@ def get_listings_from_search_results(html_file):
    
     return listing_id_list
 
-#print(get_listings_from_search_results("html_files/mission_district_search_results.html"))
+print(get_listings_from_search_results("html_files/mission_district_search_results.html"))
    
 
 def get_listing_information(listing_id):
@@ -91,48 +90,51 @@ def get_listing_information(listing_id):
     f = file.read()
     file.close()
 
-    # read_listing = 'listing_' + listing_id + '.html'
-    # with open(read_listing) as f:
-    #     contents = f.read()
     soup = BeautifulSoup(f, 'html.parser')
  
     policy_list = []
-    type_list = []
     bedroom_list = []
     get_list = []
 
-    #going to have to do regex here fml 
-    #regex = 
-    # policy_number = soup.find_all('li', class_='f19phm7j dir dir-ltr')
-    # for policy in policy_number:
-    #     policy_list.append(policy.text)
-    policy_number = soup.find_all('li', class_='f19phm7j dir dir-ltr')
-    for policy in policy_number:
+    policy_number = soup.find('ul', class_='fhhmddr dir dir-ltr')
+    for policy in policy_number: 
         span_tag = policy.find('span')
         policy_list.append(span_tag.text)
-        # policy_list.append(policy.get('span'))
-    print(policy_list[0])
-    print(policy_list)
     
+    type_place = soup.find('h2', class_ = '_14i3z6h')
+    place1 = type_place.text
+    print(place1)
+    words_list = place1.split()
+    if words_list[0].lower() == "private":
+        place_type = 'Private Room'
+    elif words_list[0].lower() == 'shared':
+        place_type = 'Shared Room'
+    else:
+        place_type = "Entire Room"
+    #print(place_type)
 
-    type_place = soup.find_all('h2', class_ = '_14i3z6h')
-    for place in type_place:
-        type_list.append(place.text)
-    #print(type_list[0])
+    bedroom = soup.find('ol', class_ = 'lgx66tx dir dir-ltr')
+    bedroom = bedroom.find_all('span')[5]
+    # for bed in bedroom:
+    #     bed_str = bed.text
+    #     if bed_str == 'Studiio':
+    #         bedroom_list.append(1)
+    #     else:
+    #         bedroom_list.append(bed_str[0])
 
-    #i think that i would have to do regex here or something like that
-    bedroom = soup.find_all('span', class_ = 's1b4clln dir dir-ltr')
-    for bed in bedroom:  
-        bedroom_list.append(bed.text)
-    #print(bedroom_list[0])
+    # return bedroom_list
 
-    for x in range(len(policy_list)):
-        get_list.append((policy_list[x], type_list[x], bedroom_list[x]))
+    
+    # pattern = r'\d\Wbedroom'
+    # found = re.findall(pattern, bedroom.text)
 
+    # if "studio".lower() in bedroom.text:
+    #     num_rooms = 1
+    # else:
+    #     num_rooms = found[0][0]
+    # return num_rooms
 
-    #return get_list
-
-print(get_listing_information('1623609'))
+#print(get_listing_information('1623609'))
 
 def get_detailed_listing_database(html_file):
     """
@@ -234,14 +236,15 @@ class TestCases(unittest.TestCase):
         self.assertEqual(listings[0][2], '1944564')
         # check that the last title is correct (open the search results html and find it)
         self.assertEqual(listings[-1][0], 'Guest suite in Mission District')
-
+        
 
     def test_get_listing_information(self):
         html_list = ["1623609",
                      "1944564",
                      "1550913",
                      "4616596",
-                     "6600081"]
+                     "6600081",
+                     "51106622"]
         # call get_listing_information for i in html_list:
         listing_informations = [get_listing_information(id) for id in html_list]
         # check that the number of listing information is correct (5)
@@ -261,8 +264,8 @@ class TestCases(unittest.TestCase):
         # check that the last listing in the html_list is a "Private Room"
 
         # check that the third listing has one bedroom
-
-        pass
+        
+        
 
     def test_get_detailed_listing_database(self):
         # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
@@ -322,8 +325,8 @@ class TestCases(unittest.TestCase):
 
 
 
-# if __name__ == '__main__':
-#     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
-#     write_csv(database, "airbnb_dataset.csv")
-#     check_policy_numbers(database)
-#     unittest.main(verbosity=2)
+if __name__ == '__main__':
+    database = get_detailed_listing_database("html_files/mission_district_search_results.html")
+    write_csv(database, "airbnb_dataset.csv")
+    check_policy_numbers(database)
+    unittest.main(verbosity=2)
