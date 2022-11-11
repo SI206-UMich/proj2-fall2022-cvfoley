@@ -235,8 +235,25 @@ def extra_credit(listing_id):
     gone over their 90 day limit, else return True, indicating the lister has
     never gone over their limit.
     """
-    pass
+    base_path = os.path.abspath(os.path.dirname(__file__))
+    fullpath = os.path.join(base_path, f'html_files/listing_{listing_id}_reviews.html')
+    file = open(fullpath, 'r')
+    f = file.read()
+    file.close()
 
+    soup = BeautifulSoup(f, 'html.parser')
+
+    dates_dict = {}
+    dates = soup.find_all('li', class_ = '_1f1oir5')
+    for date in dates:
+        date = date.text.split()
+        dates_dict[date[1]] = dates_dict.get(date[1], 0) + 1
+    for num in dates_dict.values():
+        if num > 90:
+            return False
+    return True
+print(extra_credit('1944564'))
+print(extra_credit('16204265'))
 
 class TestCases(unittest.TestCase):
 
@@ -354,3 +371,5 @@ if __name__ == '__main__':
     write_csv(database, "airbnb_dataset.csv")
     check_policy_numbers(database)
     unittest.main(verbosity=2)
+
+
