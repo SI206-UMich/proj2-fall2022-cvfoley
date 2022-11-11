@@ -1,4 +1,10 @@
 # from xml.sax import parseString
+
+# Your name: Charlotte Foley
+# Your student id: 8074 5478
+# Your email: cvfoley@umich.edu
+# List who you have worked with on this project: Amelia Nam, Lena Bibbo
+
 from bs4 import BeautifulSoup
 import re
 import os
@@ -46,18 +52,14 @@ def get_listings_from_search_results(html_file):
     cost = soup.find_all('span', class_= '_tyxjp1')
     for co in cost:
         cost_list.append(int(co.text.strip('$')))
-    #remove the $ and make it an int
 
     for listing in listing_title:
         listing_id.append(listing.get('id')[6:])
-        #get rid of the weird _title
        
     for x in range(len(cost_list)):
         listing_id_list.append((listing_title_list[x], cost_list[x], listing_id[x]))
    
     return listing_id_list
-
-#print(get_listings_from_search_results("html_files/mission_district_search_results.html"))
    
 
 def get_listing_information(listing_id):
@@ -134,7 +136,6 @@ def get_listing_information(listing_id):
     tup = (policy_num, place_type, bedroom_num)
     return tup
 
-#print(get_listing_information('1623609'))
 
 def get_detailed_listing_database(html_file):
     """
@@ -160,8 +161,6 @@ def get_detailed_listing_database(html_file):
         listing_database_list.append(tup)
 
     return listing_database_list
-
-#print(get_detailed_listing_database("html_files/mission_district_search_results.html"))
 
 def write_csv(data, filename):
     """
@@ -190,7 +189,6 @@ def write_csv(data, filename):
         data_s = sorted(data, key=lambda x:x[1])
         writer = csv.writer(f)
         writer.writerows(data_s)
-write_csv((get_detailed_listing_database('html_files/mission_district_search_results.html')), 'details.csv')
 
 def check_policy_numbers(data):
     """
@@ -219,7 +217,6 @@ def check_policy_numbers(data):
             id_list.append(tup[2])
     
     return id_list
-print(check_policy_numbers(get_detailed_listing_database("html_files/mission_district_search_results.html")))
 
 def extra_credit(listing_id):
     """
@@ -252,8 +249,6 @@ def extra_credit(listing_id):
         if num > 90:
             return False
     return True
-print(extra_credit('1944564'))
-print(extra_credit('16204265'))
 
 class TestCases(unittest.TestCase):
 
@@ -372,4 +367,43 @@ if __name__ == '__main__':
     check_policy_numbers(database)
     unittest.main(verbosity=2)
 
+'''
+Written Responses
+a. One very effective way of showing users that an Airbnb is properly validated, would be to allow users to see 
+the documents proving the Airbnb’s business license is valid. To do so, there should be some sort of system that 
+allows you to have access to the business name, tax number, business address, license number, and business 
+activity. Once you have access to all this information, you would be able to verify one’s business license. 
+This system is similar to this project because we were able to take data from part of a website and then 
+utilize that public information in our desired way. While this seems logical and would ensure to users that 
+the short term rental they are staying at is safe and successfully validated, there are many cons to this idea. 
+For example, businesses and short term rental owners may be uncomfortable with the fact that third party 
+companies will have access to their personal information. Another complaint that would make people against 
+adopting this system would be that it is too time-consuming. Many people may say that users will lose interest 
+in figuring out whether the short term rental’s business license is valid or not because it requires a lot of
+information and time. 
 
+b. One question I could explore would be, does the cost of housing (specifically Airbnbs) relate positively or 
+negatively to the average income for Americans in the United States? Another question this data could help me 
+explore could be, how does the level of safety for housing locations relate to housing cost? The answer to these 
+questions could tell potential buyers and renters that there is a lack of or substantial amount of housing 
+security. As a data scientist working with a housing activist organization to fight against housing security, 
+if the answers to these questions reflect poorly against housing security it would help our organization build a case.  
+
+c.	I think one important factor to consider is constitutional rights, specifically the First Amendment right to free 
+speech. If you are discussing the legality of web scraping in relation to terms of service violations, people's rights 
+still need to remain protected. Preventing someone from violating the terms of service in order to access data or share 
+information should not violate their individual rights. It is also important to consider what is categorized as an 
+infringement on personal property and whether or not a computer system is considered public or personal. This is important 
+because the legality of web scraping and data accessing can differ based on whether the system is considered to be 
+personal property.
+
+d. This situation reminds me of the Microsoft versus Google situation. There is a really fine line between deciding 
+what is too much information versus what is the appropriate amount of information. Some guidelines should be enforced 
+to help reduce this uncomfortableness. For example, we need to make sure that we are looking at the impact levels of 
+all the information that is being processed. One guideline that we should consider is what would be the adverse 
+effect on the individual or business? If the answer to that question is, catastrophic effects then that should tell 
+us we should not be putting this information out to the public. Another guideline that we should consider is whether 
+the information is a breach of privacy or a contract/regulation. If the data that we are currently assessing breaches 
+any sort of agreements that could result in legal issues, then that should determine that we should not be using this 
+data publicly. 
+'''
